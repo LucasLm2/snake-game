@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jogo da cobrinha</title>
+</head>
+<body>
+
+	<canvas id="janela" width="600" height="600"></canvas>
+	<script type="text/javascript">
+		
+		// window.onload - Executa depois que a página esta carregada
+		window.onload = function(){
+			
+			// document.getElementById() - Retorna a referência do elemento através de seu ID
+			var janela = document.getElementById('janela');
+			// janela.getContext() - Retorna qual o desenho associado ao canvas
+			var contexto = janela.getContext("2d");
+
+			// document.addEventListener() - Registra uma única espera de evento em um único alvo.
+			document.addEventListener("keydown", keyPush);
+			
+			// Chama repetidamente uma função ou executa um trecho de código, com um intervalo de tempo fixo entre cada chamada.
+			setInterval(jogo, 1000/60);
+
+			// Definindo uma constante - Pecas que deve percorrer
+			const velocidade = 1;
+
+			var velocidadeX = velocidadeY = 0;
+			var posicaoCobraX = 10;
+			var posicaoCobraY = 15;
+			var tamanhoPeca = 30;
+			var quantidadePeca = 20;
+			var posicaoMacaX = posicaoMacaY = 15;
+
+			var corpoCobra = [];
+			var tamanhoCorpoCobra = 5;
+
+			// Função que 
+			function jogo()
+			{
+				posicaoCobraX += velocidadeX;
+				posicaoCobraY += velocidadeY;
+
+				// Fazendo cobra ultrapassar a parede
+				if (posicaoCobrax < 0) {
+					posicaoCobraX = quantidadePeca - 1;
+				}
+				if (posicaoCobraX > quantidadePeca - 1) {
+					posicaoCobraX = 0;
+				}
+				if (posicaoCobraY < 0) {
+					posicaoCobraY = quantidadePeca - 1;
+				}
+				if (posicaoCobraY > quantidadePeca - 1) {
+					posicaoCobraY = 0;
+				}
+
+				// Pintando tela do jogo
+				contexto.fillStyle = "black";
+				contexto.fillRect(0, 0, janela.width, janela.height);
+
+				// Pintando maçã
+				contexto.fillStyle = "red";
+				contexto.fillRect(posicaoMacaX * tamanhoPeca, posicaoMacaY * tamanhoPeca, tamanhoPeca, tamanhoPeca);
+
+				// Pintando a cobra
+				contexto.fillStyle = "gray";
+				for (var i = 0; i < corpoCobra.length; i++) {
+					contexto.fillRect(corpoCobra[i].x * tamanhoPeca, corpoCobra[i].y * tamanhoPeca, tamanhoPeca /* - 1 */, tamanhoPeca /* - 1 */);
+
+					// Verificando se a cabeça esta batendo em alguma parte do corpo
+					if (corpoCobra[i].x == posicaoCobraX && corpoCobra[i].y == posicaoCobraY)
+					{
+						velocidadeX = velocidadeY = 0;
+						tamanhoCorpoCobra = 5;
+					}
+				}
+
+				// Fazendo o movimento da cobra - inserindo posição atual
+				corpoCobra.push({x:posicaoCobraX, y:posicaoCobraY})
+				// Removendo a ultima posição do array
+				while (corpoCobra.length > tamanhoCorpoCobra) {
+					corpoCobra.shift();
+				}
+
+				// Cobra comeu
+				if (posicaoMacaX == posicaoCobraX && posicaoMacaY == posicaoCobraY){
+					tamanhoCorpoCobra++;
+					// Adicionando a maça em outro local
+					posicaoMacaX = Math.floor(Math.random() * quantidadePeca);
+					posicaoMacaY = Math.floor(Math.random() * quantidadePeca);
+				}
+
+			}
+
+			function keyPush(event)
+			{
+				if(event.keyCode == 37) // Esquerda
+				{
+					velocidadeX = -velocidade;
+					velocidadeY = 0;
+				} 
+				else if(event.keyCode == 38) // Cima
+				{
+					velocidadeX = 0;
+					velocidadeY = -velocidade;
+				} 
+				else if(event.keyCode == 39) // Direita
+				{
+					velocidadeX = velocidade;
+					velocidadeY = 0;
+				} 
+				else if(event.keyCode == 40) // Baixo
+				{
+					velocidadeX = 0;
+					velocidadeY = velocidade;
+				} 
+
+				// switch (event.keyCode) {
+				// 	case 37: // Left
+				// 		velocidadeX = -velocidade;
+				// 		velocidadeY = 0;
+				// 		break;
+				// 	case 38: // up
+				// 		velocidadeX = 0;
+				// 		velocidadeY = -velocidade;
+				// 		break;
+				// 	case 39: // right
+				// 		velocidadeX = velocidade;
+				// 		velocidadeY = 0;
+				// 		break;
+				// 	case 40: // down
+				// 		velocidadeX = 0;
+				// 		velocidadeY = velocidade;
+				// 		break;
+				// }
+
+			}
+
+		}
+
+	</script>
+</body>
+</html>
